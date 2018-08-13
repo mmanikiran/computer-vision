@@ -1,4 +1,4 @@
-function [y] = myfilter (img, z)
+function [y] = nonmaxsuppression (img, angle)
 
 #img3 = zeros(size(img,1), size(img,2));
 
@@ -52,11 +52,27 @@ for i = 1 : size(img, 1)
   if(i+1 < size(img,1) && j+1 < size(img,2))
     rb = img(i+1, j+1);
   endif
+  y(i, j) = img(i, j);
+  if(angle(i, j) == 45)
+   if (img(i,j) != max([lb, c, rt]))
+      y(i,j) = 0;
+   endif
   
-  y(i,j) = z(1,1)*lt + z(1,2)*t + z(1,3)*rt + z(2,1)*l + z(2,2)*c + z(2,3)*r + z(3,1)*lb + z(3,2)*b + z(3,3)*rb;
+  elseif(angle(i, j) == 90 || angle(i, j) == 270)
+   if (img(i,j) != max([t, c, b]))
+      y(i,j) = 0;
+   endif
   
-  if(y(i,j) < 0)
-    y(i,j) = -1 * y(i,j);
+  elseif(angle(i, j) == 0 || angle(i, j) == 180)
+   if (img(i,j) != max([l, c, r]))
+      y(i,j) = 0;
+   endif
+   
+   elseif(angle(i, j) == 135 || angle(i, j) == 315)
+   if (img(i,j) != max([lt, c, rb]))
+      y(i,j) = 0;
+   endif
+   
   endif
   
   endfor
